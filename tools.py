@@ -1,5 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from groq import Groq
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+client = Groq(api_key=GROQ_API_KEY)
 
 def get_sentiment_counts_by_date(reviews_df: pd.DataFrame):
     """
@@ -76,3 +83,31 @@ def plot_simple_bar_chart(reviews_df: pd.DataFrame, file_name: str = "sentiment_
     plt.savefig(file_name)
     plt.close()
     return f"Plot saved to {file_name}"
+
+
+
+def analyze_sentiment(review_text:str)->str:
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a sentiment analysis expert. Analyze the following restaurant review and classify its sentiment as 'Positive', 'Negative', or 'Neutral'. Do not add any other text, just the classification.",
+                },
+                {
+                    "role": "user",
+                    "content": review_text,
+                }
+            ],
+            model="llama-3.1-8b-instant",
+            temperature=0,
+            max_tokens=10,
+        )
+        sentiment = chat_completion.choices[0].message.content.strip()
+        if sentiment in ['Positive', 'Negative', 'Neutral']:
+            return sentiment
+        else:
+            return "Neutral"
+    except Exception as e:
+        print(f"Error calling Groq API for sentiment analysis: {e}")
+        return "Neutral"

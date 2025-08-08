@@ -4,7 +4,8 @@ from tools import (
     plot_stacked_bar_chart,
     plot_line_chart,
     plot_pie_chart,
-    plot_simple_bar_chart
+    plot_simple_bar_chart,
+    analyze_sentiment
 )
 
 def run_plotting_tests():
@@ -34,5 +35,11 @@ def run_plotting_tests():
     
     print("All plots generated successfully. Check your project directory for the image files.")
 
+
+def run_sentiment_analysis_tests():
+    feedback = analyze_sentiment("The food was amazing and the service was excellent!")
+    print(f"Sentiment Analysis Feedback: {feedback}")
+
 if __name__ == "__main__":
-    run_plotting_tests()
+    #run_plotting_tests()
+    run_sentiment_analysis_tests()
