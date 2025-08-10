@@ -5,7 +5,8 @@ from tools import (
     plot_line_chart,
     plot_pie_chart,
     plot_simple_bar_chart,
-    analyze_sentiment
+    analyze_sentiment,
+    generate_recommendations_report
 )
 
 def run_plotting_tests():
@@ -40,6 +41,15 @@ def run_sentiment_analysis_tests():
     feedback = analyze_sentiment("The food was amazing and the service was excellent!")
     print(f"Sentiment Analysis Feedback: {feedback}")
 
+def run_recommendations_report():
+    print("Generating Recommendations Report...")
+    database = ReviewDatabase('European Restaurant reviews.csv')  # Create instance
+    start_date = pd.to_datetime('2019-10-01')
+    end_date = pd.to_datetime('2019-12-31')
+    report = generate_recommendations_report(database, start_date, end_date)
+    print(report)
+
 if __name__ == "__main__":
     #run_plotting_tests()
-    run_sentiment_analysis_tests()
+    #run_sentiment_analysis_tests()
+    run_recommendations_report()

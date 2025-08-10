@@ -21,5 +21,9 @@ class ReviewDatabase:
         ]
         return filtered
 
+    def get_reviews_by_sentiment(self, sentiment: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
+        reviews_in_range = self.get_reviews(start_date, end_date)
+        return reviews_in_range[reviews_in_range['Sentiment'].str.lower() == sentiment.lower()]
+
 
 newdb = ReviewDatabase()
