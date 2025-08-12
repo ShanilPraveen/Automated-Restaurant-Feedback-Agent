@@ -10,6 +10,8 @@ from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, END
 
+from data import get_database
+
 from tools import (
     generate_recommendations_report, 
     plot_pie_chart, 
@@ -39,7 +41,7 @@ def get_recommendations_report(start_date:str,end_date:str)->str:
     Returns:
         str: A professional-style report with strategic recommendations.
     """
-    database = ReviewDatabase("European Restaurant Reviews.csv")
+    database = get_database()
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     report = generate_recommendations_report(database, start_date, end_date)
@@ -59,7 +61,7 @@ def get_sentiment_visualization(chart_type: str, start_date: str, end_date: str)
     Returns:
         str: The path to the saved image file.
     """
-    database = ReviewDatabase('European Restaurant reviews.csv')
+    database = get_database()
     start_ts = pd.to_datetime(start_date)
     end_ts = pd.to_datetime(end_date)
     reviews_df = database.get_reviews(start_ts, end_ts)
@@ -128,9 +130,10 @@ prompt_rec = ChatPromptTemplate.from_messages([
 
     Here are your rules:
     1.  First, you must always use the `get_recommendations_report` tool to get the report's content.
-    2.  After generating the report content, you MUST check if the user's original request asked to "save," "create a PDF," or "export" the report.
-    3.  If the user requested to save the report, you MUST then use the `save_report_to_pdf` tool with the report content from the first step.
-    4.  If the user did NOT request to save the report, you MUST simply return the content of the report to the user.
+    2.  After calling the first tool, the output will be the report content itself. You must use this output directly as the `report` argument for the next tool.
+    3.  If the user's original request asked to "save," "create a PDF," or "export" the report, you MUST then use the `save_report_to_pdf` tool.
+    4.  The `file_name` argument for the `save_report_to_pdf` tool should be a descriptive name based on the report's date range.
+    5.  If the user did NOT request to save the report, you MUST simply return the content of the report to the user as your final answer.
     """), 
     ("user", "{input}"), 
     ("placeholder", "{agent_scratchpad}")
