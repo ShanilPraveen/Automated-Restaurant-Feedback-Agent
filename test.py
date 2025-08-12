@@ -8,6 +8,7 @@ from tools import (
     analyze_sentiment,
     generate_recommendations_report
 )
+from main import app
 
 def run_plotting_tests():
     print("Initializing ReviewDatabase...")
@@ -49,7 +50,21 @@ def run_recommendations_report():
     report = generate_recommendations_report(database, start_date, end_date)
     print(report)
 
+
+def check_workflow(prompt: str):
+    print("Checking workflow...")
+    response = app.invoke({"input": prompt})
+    print("\n" + "="*50)
+    print("Agent Response:")
+    print("="*50)
+    print(response["agent_outcome"])
+    print("Workflow check complete.")
+
 if __name__ == "__main__":
     #run_plotting_tests()
     #run_sentiment_analysis_tests()
-    run_recommendations_report()
+    #run_recommendations_report()
+    #check_workflow("Create a chart for the year 2019 for analysing the trend of responses with time")
+    # check_workflow("Respond to this review: 'The pizza was excellent, and the staff was very friendly! I will definitely be back.'")
+    check_workflow("Respond to this review: 'The coffee was not good, and the service was slow.'")
+    #check_workflow("Create a report for the first half of 2019 and save it as well.")
