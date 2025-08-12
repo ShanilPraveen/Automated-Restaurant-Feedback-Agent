@@ -26,4 +26,5 @@ class ReviewDatabase:
         return reviews_in_range[reviews_in_range['Sentiment'].str.lower() == sentiment.lower()]
 
 
-newdb = ReviewDatabase()
+def get_database() -> ReviewDatabase:
+    return ReviewDatabase()
