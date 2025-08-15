@@ -13,9 +13,10 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=GROQ_API_KEY)
 
+
 def save_report_as_pdf(report_text: str, filename: str):
     """
-    Saves the given report text to a PDF file with improved formatting.
+    Saves the given report text to a well-formatted PDF file.
     """
     try:
         doc = SimpleDocTemplate(filename, pagesize=letter)
@@ -35,12 +36,14 @@ def save_report_as_pdf(report_text: str, filename: str):
             if not line:
                 continue
 
+            line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line) 
+
             if line.endswith(':'):
                 story.append(Paragraph(f"<b>{line}</b>", styles['Normal']))
-            elif re.match(r'^\d+\.\s', line):
-                story.append(Paragraph(f"  {line}", styles['Normal'])) 
+            elif re.match(r'^\d+\.\s', line): 
+                story.append(Paragraph(f"{line}", styles['Normal']))
             elif line.startswith('- ') or line.startswith('* '):
-                 story.append(Paragraph(f"  • {line[2:]}", styles['Normal'])) 
+                story.append(Paragraph(f"• {line[2:]}", styles['Normal']))
             else:
                 story.append(Paragraph(line, styles['Normal']))
                 
