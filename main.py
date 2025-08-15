@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import pandas as pd
-import operator
 from typing import TypedDict
 
 from langchain_groq import ChatGroq
@@ -28,7 +27,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 #The Tools
 
-@tool
+@tool(return_direct=True)
 def get_recommendations_report(start_date:str,end_date:str)->str:
     """
     Generates a full strategic report with recommendations for a specific date range.
@@ -123,19 +122,15 @@ class AgentState(TypedDict):
 llm = ChatGroq(model="llama-3.1-8b-instant", api_key=GROQ_API_KEY,temperature=0)
 
 #Strategic Recommendation Agent
-tools_rec = [get_recommendations_report, save_report_to_pdf]
+tools_rec = [get_recommendations_report]
 prompt_rec = ChatPromptTemplate.from_messages([
     ("system", """
-    You are a strategic recommendation agent. Your task is to generate reports based on a user's request. You have two tools: `get_recommendations_report` and `save_report_to_pdf`.
-
-    Here are your rules:
-    1.  First, you must always use the `get_recommendations_report` tool to get the report's content.
-    2.  After calling the first tool, the output will be the report content itself. You must use this output directly as the `report` argument for the next tool.
-    3.  If the user's original request asked to "save," "create a PDF," or "export" the report, you MUST then use the `save_report_to_pdf` tool.
-    4.  The `file_name` argument for the `save_report_to_pdf` tool should be a descriptive name based on the report's date range.
-    5.  If the user did NOT request to save the report, you MUST simply return the content of the report to the user as your final answer.
-    """), 
-    ("user", "{input}"), 
+    You are a strategic recommendation agent. Your task is to generate reports based on a user's request. You have one tool: `get_recommendations_report`.
+    Once the tool is called and it returns a response, you MUST return that response as the final answer.
+    You MUST NOT call the tool more than once per user query.
+    You MUST NOT generate any extra commentary, greetings, explanations, or messages beyond the tool result.
+    """),
+    ("user", "{input}"),
     ("placeholder", "{agent_scratchpad}")
 ])
 agent_rec = create_tool_calling_agent(llm,tools_rec, prompt_rec)
@@ -172,8 +167,10 @@ agent_executor_feedback = AgentExecutor(agent=agent_feedback, tools=tools_feedba
 
 #Nodes functions to execute each agent
 def strategic_recommendation_node(state):
-    result  = agent_executor_rec.invoke({"input": state["input"]})
-    return {"agent_outcome":result["output"]}
+    result = agent_executor_rec.invoke({"input": state["input"]})
+    agent_output = result.get("output") or result.get("return_values", {}).get("output") or str(result)
+    return {"agent_outcome": agent_output}
+
 
 def sentiment_plotting_node(state):
     result = agent_executor_plot.invoke({"input": state["input"]})
