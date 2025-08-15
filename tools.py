@@ -261,7 +261,7 @@ def generate_recommendations_report(database: object, start_date: pd.Timestamp, 
             max_tokens=5000,
         )
         report = chat_completion.choices[0].message.content.strip()
-        #save_report_as_pdf(report, "recommendations_report.pdf")
+        save_report_as_pdf(report, "report.pdf")
         return report
     except Exception as e:
         print(f"Error calling Groq API for recommendations: {e}")

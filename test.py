@@ -61,11 +61,11 @@ def check_workflow(prompt: str):
     print("Workflow check complete.")
 
 if __name__ == "__main__":
-    #run_plotting_tests()
-    #run_sentiment_analysis_tests()
-    #run_recommendations_report()
-    #check_workflow("Create a chart for the year 2019 for analysing the trend of responses with time")
-    #check_workflow("Respond to this review: 'The pizza was excellent, and the staff was very friendly! I will definitely be back.'")
-    #check_workflow("Respond to this review: 'The coffee was not good, and the service was slow.'")
-    #check_workflow("Create a report for the last half of 2018.")
-    check_workflow("Create a report for the first half of 2019 and save it as well.")
+    # check_workflow("Respond to this review: The service was fantastic and the food was delicious!")
+    # check_workflow("Respond to this review: The food was cold and the waiter was very rude.")
+    # check_workflow("Show me the sentiment trend for the year 2019.")
+    # check_workflow("What is the sentiment distribution for the third quarter of 2018?")
+    
+                        # Report Generation May Take a while
+    # check_workflow("Create a report for the last half of 2018 and save it as well.")
+    check_workflow("Generate a strategic recommendations report for the period from 2019-01-01 to 2019-06-30 and save it as a PDF.")
