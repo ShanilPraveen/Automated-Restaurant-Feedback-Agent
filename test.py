@@ -61,11 +61,12 @@ def check_workflow(prompt: str):
     print("Workflow check complete.")
 
 if __name__ == "__main__":
-    # check_workflow("Respond to this review: The service was fantastic and the food was delicious!")
+    check_workflow("Respond to this review: The service was fantastic and the food was delicious!")
     # check_workflow("Respond to this review: The food was cold and the waiter was very rude.")
     # check_workflow("Show me the sentiment trend for the year 2019.")
     # check_workflow("What is the sentiment distribution for the third quarter of 2018?")
+    # check_workflow("how is the sentiments of customers are changed in 2023?")
     
                         # Report Generation May Take a while
     # check_workflow("Create a report for the last half of 2018 and save it as well.")
-    check_workflow("Generate a strategic recommendations report for the period from 2019-01-01 to 2019-06-30 and save it as a PDF.")
+    # check_workflow("Generate a strategic recommendations report for the period from 2019-01-01 to 2019-06-30 and save it as a PDF.")
